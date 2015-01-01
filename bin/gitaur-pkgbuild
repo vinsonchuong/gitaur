@@ -109,7 +109,8 @@ else
 
 	pa() {
 		local name="$1"
-		eval set -- ${!name}
+		local pattern=$name\[\@]
+		eval set -- ${!pattern}
 		if [ "${#@}" -eq 1 ]
 		then
 			stringify '%s=("%q")\n' "$name" "$1"
