@@ -3,7 +3,6 @@ ARGS=$(getopt -o  hu:p: -l help,user:,pass: -- "$@")
 eval set -- $ARGS
 while [ $# -gt 0 ]
 do
-	echo "$@"
 	case "$1" in
 		-h|--help)
 			SHOW_HELP=yes
