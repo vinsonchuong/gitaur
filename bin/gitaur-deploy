@@ -1,0 +1,52 @@
+#!/bin/bash -e
+ARGS=$(getopt -o  hu:p: -l help,user:,pass: -- "$@")
+eval set -- $ARGS
+while [ $# -gt 0 ]
+do
+	echo "$@"
+	case "$1" in
+		-h|--help)
+			SHOW_HELP=yes
+			shift
+			;;
+		-u|--user)
+			USERNAME="$2"
+			shift 2
+			;;
+		-p|--pass)
+			PASSWORD="$2"
+			shift 2
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+if [ "$SHOW_HELP" = 'yes' ]
+then
+	cat '/usr/share/gitaur/help/gitaur-deploy'
+else
+	PKGBUILD="$(realpath "$1")"
+	TMP="$(mktemp -d)"
+
+	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
+
+	cd "$TMP"
+	ERRORS=$(namcap 'PKGBUILD')
+	if [ -n "$ERRORS" ]
+	then
+		echo $ERRORS
+		exit 1
+	else
+		mkaurball
+		if [ -n "$USERNAME" ]
+		then
+			burp -u "$USERNAME" -p "$PASSWORD" *.src.tar.gz
+		else
+			burp *.src.tar.gz
+		fi
+		rm -rf "$TMP"
+	fi
+fi

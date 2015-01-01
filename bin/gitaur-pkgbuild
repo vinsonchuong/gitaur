@@ -1,0 +1,177 @@
+#!/bin/bash -e
+ARGS=$(getopt -o  h -l help -- "$@")
+eval set -- $ARGS
+while [ $# -gt 0 ]
+do
+	case "$1" in
+		-h|--help)
+			SHOW_HELP=yes
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+if [ "$SHOW_HELP" = 'yes' ]
+then
+	cat '/usr/share/gitaur/help/gitaur-pkgbuild'
+else
+	PKGBUILD="$(realpath $1)"
+
+	cd "$(dirname "$PKGBUILD")"
+
+	GITHUB_URL="$(hub browse -u)"
+	GITHUB_NAME="${GITHUB_URL#*//*/}"
+	GITHUB_METADATA="$(curl -s "https://api.github.com/repos/$GITHUB_NAME")"
+	github() {
+		echo "$GITHUB_METADATA" | jq -r "$1"
+	}
+
+	AUR_METADATA="$(aura -Ai "$(github '.name')")"
+	aur() {
+		echo "$AUR_METADATA" | awk "/$1/ {print \$3}"
+	}
+
+	maintainers() {
+		local people=$(sed -n '/# Maintainer\|# Contributor/p' "$PKGBUILD")
+		if [ -n "$people" ]
+		then
+			echo "$people"
+		else
+			hub shortlog -se | cut -c8- | sed 's/^/# Maintainer: /'
+		fi
+	}
+
+	next_release() {
+		local aur_version="$(aur 'Version' | grep -o '^[^-]*')"
+		local aur_release="$(aur 'Version' | grep -o '[^-]*$')"
+		if [ "$aur_version" = "$pkgver" ]
+		then
+			echo "$((aur_release + 1))"
+		else
+			echo '1'
+		fi
+	}
+
+	parse_license() {
+		FILE="$(dirname "$PKGBUILD")/LICENSE"
+		TMP="$(mktemp -d)"
+		cp "$FILE" "$TMP/target"
+		LICENSE=$(ninka "$TMP/target" | awk -F ';' '{print $2}')
+		rm -rf "$TMP"
+		if [ -n "$LICENSE" ]
+		then
+			echo "$LICENSE" \
+				| sed 's/GPLv/GPL/' \
+				| sed 's/^MIT.*$/MIT/' \
+				| sed 's/^BSD.*$/BSD/' \
+				| sed 's/^Apache*$/Apache/' \
+				| sed 's/^MPL.*$/MPL/' \
+				| sed 's/^CPL.*$/CPL/' \
+				| sed 's/^php*$/PHP/' \
+				| sed 's/^W3C*$/W3C/'
+		else
+			exit 1
+		fi
+	}
+
+	md5sums() {
+		local tmp="$(mktemp -d)"
+		{
+			pa pkgname
+			pa pkgver
+			pa url
+			pa source
+		} > "$tmp/PKGBUILD"
+		cd "$tmp"
+		makepkg -g 2>/dev/null
+		rm -rf "$tmp"
+	}
+
+	stringify() {
+		printf "$@" \
+			| sed 's/\\ / /g' \
+			| sed "/^url=/!s|$url|\$url|" \
+			| sed "/^pkgname=/!s/$pkgname/\$pkgname/" \
+			| sed "/^pkgver=/!s/$pkgver/\$pkgver/"
+	}
+
+	ps() {
+		local str="${!1}"
+		if [ -n "$str" ]
+		then
+			stringify '%s="%q"\n' "$1" "$str"
+		fi
+	}
+
+	pa() {
+		local name="$1"
+		eval set -- ${!name}
+		if [ "${#@}" -eq 1 ]
+		then
+			stringify '%s=("%q")\n' "$name" "$1"
+		elif [ "${#@}" -gt 1 ]
+		then
+			stringify '%s=(\n' "$name"
+			stringify '\t"%q"\n' "$@"
+			stringify ')\n'
+		fi
+	}
+
+	pf() {
+		declare -f "$1" || return 0
+	}
+
+	pkgname="$(github '.name')"
+	pkgver="$(hub tag | sort -V | tail -1 | cut -c2-)"
+	pkgrel="$(next_release)"
+	pkgdesc="$(github '.description')"
+	arch=('any')
+	url="$GITHUB_URL"
+	license=("$(parse_license)")
+	source=("$GITHUB_URL/archive/v$pkgver.tar.gz")
+	build() {
+		cd "$srcdir/$pkgname-$pkgver"
+		[ -d 'doc' ] && clidoc doc/*.md
+	}
+	package() {
+		cd "$srcdir/$pkgname-$pkgver"
+		[ -d 'bin' ] && install -Dm755 -t "$pkgdir/usr/bin" bin/*
+		[ -d 'help' ] && install -Dm644 -t "$pkgdir/usr/share/$pkgname/help" help/*
+		[ -f 'README.md' ] && install -Dm644 -t "$pkgdir/usr/share/doc/$pkgname" 'README.md'
+		[ -d 'doc' ] && install -Dm644 -t "$pkgdir/usr/share/doc/$pkgname/doc" doc/*.md
+		[ -f 'LICENSE' ] && install -Dm644 -t "$pkgdir/usr/share/licenses/$pkgname" 'LICENSE'
+		[ -d 'man' ] && install -Dm644 -t "$pkgdir/usr/share/man/man1" man/*
+	}
+
+	eval "$(cat "$PKGBUILD")"
+
+	maintainers
+	ps pkgname
+	ps pkgver
+	ps pkgrel
+	ps pkgdesc
+	pa arch
+	ps url
+	pa license
+	pa depends
+	pa optdepends
+	pa makedepends
+	pa checkdepends
+	pa provides
+	pa conflicts
+	pa backup
+	pa options
+	ps install
+	ps changelog
+	pa source
+	pa noextract
+	md5sums
+	pf prepare
+	pf build
+	pf check
+	pf package
+fi
