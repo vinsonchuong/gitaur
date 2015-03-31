@@ -1,2 +1,2 @@
-depends=('aura' 'burp' 'hub' 'namcap' 'ninka' 'pkgbuild-introspection')
+depends=('aura' 'burp' 'hub' 'jq' 'namcap' 'ninka' 'pkgbuild-introspection')
 makedepends=('clidoc')
