@@ -39,7 +39,7 @@ files that follow the directory structure:
   Show help text and exit.
 
 ## COPYRIGHT
-`gitaur` is Copyright (c) 2014 Vinson Chuong under The MIT License.
+`gitaur` is Copyright (c) 2015 Vinson Chuong under The MIT License.
 
 ## SEE ALSO
 makepkg(8), PKGBUILD(5)

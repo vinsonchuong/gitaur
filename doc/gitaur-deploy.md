@@ -27,7 +27,7 @@ If a username and password are not given, `burp` will prompt for them.
   Authenticate as the given user with the given password.
 
 ## COPYRIGHT
-`gitaur` is Copyright (c) 2014 Vinson Chuong under The MIT License.
+`gitaur` is Copyright (c) 2015 Vinson Chuong under The MIT License.
 
 ## SEE ALSO
 burp(1), gitaur-pkgbuild(1), namcap(1)
