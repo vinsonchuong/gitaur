@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 ARGS=$(getopt -o  h -l help -- "$@")
 eval set -- $ARGS
 while [ $# -gt 0 ]
@@ -14,6 +14,13 @@ do
 			;;
 	esac
 done
+
+if [ -z "$SHOW_HELP" -a -z "$0"  ]
+then
+	SHOW_HELP='yes'
+	echo 'Please specify the path to a PKGBUILD file' >&2
+	echo >&2
+fi
 
 if [ "$SHOW_HELP" = 'yes' ]
 then
