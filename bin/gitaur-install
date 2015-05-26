@@ -1,0 +1,58 @@
+#!/bin/bash
+ARGS=$(getopt -o  h -l help -- "$@")
+eval set -- $ARGS
+while [ $# -gt 0 ]
+do
+	case "$1" in
+		-h|--help)
+			SHOW_HELP=yes
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+if [ -z "$SHOW_HELP" -a -z "$0"  ]
+then
+	SHOW_HELP='yes'
+	echo 'Please specify the path to a PKGBUILD file' >&2
+	echo >&2
+fi
+
+if [ "$SHOW_HELP" = 'yes' ]
+then
+	cat '/usr/share/gitaur/help/gitaur-install'
+else
+	PKGBUILD="$(realpath "$1")"
+	TMP="$(mktemp -d)"
+
+	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
+	eval "$(cat "$TMP/PKGBUILD" | grep '^\(pkgname\|pkgver\|pkgrel\)=')"
+	sed -i "s/source=.*/source=('$pkgname-$pkgver.tar.gz')/" "$TMP/PKGBUILD"
+	sed -i "s/md5sums=.*/md5sums=('SKIP')/" "$TMP/PKGBUILD"
+
+	cd "$(dirname "$PKGBUILD")"
+	mkdir "$TMP/$pkgname-$pkgver"
+	for file in $(git ls-files)
+	do
+		mkdir -p "$TMP/$pkgname-$pkgver/$(dirname "$file")"
+		cp "$file" "$TMP/$pkgname-$pkgver/$file"
+	done
+
+	cd "$TMP"
+	tar -czf "$pkgname-$pkgver.tar.gz" "$pkgname-$pkgver"
+
+	ERRORS=$(namcap 'PKGBUILD')
+	if [ -n "$ERRORS" ]
+	then
+		echo $ERRORS
+		exit 1
+	else
+		makepkg -s
+		sudo pacman -U *.pkg.tar.xz
+		rm -rf "$TMP"
+	fi
+fi
