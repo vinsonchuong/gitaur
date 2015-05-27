@@ -1,7 +1,7 @@
 # gitaur-install(1) -- populates and installs a PKGBUILD
 
 ## SYNOPSIS
-`gitaur-install` [<PKGBUILD>]<br>
+`gitaur-install` [_PKGBUILD_]<br>
 `gitaur-install` `-h`|`--help`<br>
 
 ## DESCRIPTION

@@ -1,7 +1,7 @@
 # gitaur-pkgbuild(1) -- populates an incomplete PKGBUILD
 
 ## SYNOPSIS
-`gitaur-pkgbuild` [<PKGBUILD>]<br>
+`gitaur-pkgbuild` [_PKGBUILD_]<br>
 `gitaur-pkgbuild` `-h`|`--help`<br>
 
 ## DESCRIPTION

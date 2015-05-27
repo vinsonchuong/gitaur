@@ -1,8 +1,8 @@
 # gitaur-deploy(1) -- populates and deploys a PKGBUILD to the AUR
 
 ## SYNOPSIS
-`gitaur-deploy` [<PKGBUILD>]<br>
-`gitaur-deploy` `-u` <username> `-p` <password> [`--`] [<PKGBUILD>]...<br>
+`gitaur-deploy` [_PKGBUILD_]<br>
+`gitaur-deploy` `-u` _username_ `-p` _password_ [`--`] [_PKGBUILD_]...<br>
 `gitaur-deploy` `-h`|`--help`<br>
 
 ## DESCRIPTION
@@ -24,9 +24,9 @@ If a username and password are not given, `burp` will prompt for them.
 ## OPTIONS
 * -h, --help:
   Show help text and exit.
-* -u, --user <username>:
+* -u, --user _username_:
   Upload the the AUR has the given user.
-* -p, --pass <password>:
+* -p, --pass _password_:
   Authenticate as the given user with the given password.
 
 ## COPYRIGHT
