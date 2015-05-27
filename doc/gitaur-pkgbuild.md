@@ -1,12 +1,15 @@
 # gitaur-pkgbuild(1) -- populates an incomplete PKGBUILD
 
 ## SYNOPSIS
-`gitaur-pkgbuild` <PKGBUILD><br>
+`gitaur-pkgbuild` [<PKGBUILD>]<br>
 `gitaur-pkgbuild` `-h`|`--help`<br>
 
 ## DESCRIPTION
 `gitaur-pkgbuild` populates an incomplete `PKGBUILD` with values derived from
 the corresponding GitHub repository and AUR deployment.
+
+If the path to a `PKGBUILD` is not provided, `gitaur-pkgbuild` will look in the
+current working directory for a `PKGBUILD`.
 
 The default values used are as follows:
 

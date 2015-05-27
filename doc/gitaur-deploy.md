@@ -1,13 +1,16 @@
 # gitaur-deploy(1) -- populates and deploys a PKGBUILD to the AUR
 
 ## SYNOPSIS
-`gitaur-deploy` <PKGBUILD><br>
-`gitaur-deploy` `-u` <username> `-p` <password> [`--`] <PKGBUILD>...<br>
+`gitaur-deploy` [<PKGBUILD>]<br>
+`gitaur-deploy` `-u` <username> `-p` <password> [`--`] [<PKGBUILD>]...<br>
 `gitaur-deploy` `-h`|`--help`<br>
 
 ## DESCRIPTION
 `gitaur-deploy` runs `gitaur-pkgbuild` to populate the `PKGBUILD` if it is
 incomplete, creates a source package, and uploads it to the AUR.
+
+If the path to a `PKGBUILD` is not provided, `gitaur-deploy` will look in the
+current working directory for a `PKGBUILD`.
 
 `namcap` is used to check the generated `PKGBUILD` for any problems.
 

@@ -26,7 +26,13 @@ if [ "$SHOW_HELP" = 'yes' ]
 then
 	cat '/usr/share/gitaur/help/gitaur-install'
 else
-	PKGBUILD="$(realpath "$1")"
+	PKGBUILD="$(realpath "$1" 2>/dev/null || realpath 'PKGBUILD')"
+	if [ ! -f "$PKGBUILD" ]
+	then
+		echo 'Please specify a valid path to a PKGBUILD file' >&2
+		exit 1
+	fi
+
 	TMP="$(mktemp -d)"
 
 	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
