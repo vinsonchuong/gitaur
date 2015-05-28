@@ -145,7 +145,7 @@ else
 	arch=('any')
 	url="$GITHUB_URL"
 	license=("$(parse_license)")
-	source=("$GITHUB_URL/archive/v$pkgver.tar.gz")
+	source=("$GITHUB_URL/archive/v\$pkgver.tar.gz")
 	build() {
 		cd "$srcdir/$pkgname-$pkgver"
 		[ -d 'doc' ] && clidoc doc/*.md
