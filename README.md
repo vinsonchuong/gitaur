@@ -8,8 +8,8 @@ A set of command-line scripts that automate common tasks in maintaining
   ([docs](doc/gitaur-pkgbuild.md), [code](bin/gitaur-pkgbuild)) 
 * `gitaur-install` builds and installs a package
   ([docs](doc/gitaur-install.md), [code](bin/gitaur-install)) 
-* `gitaur-deploy` packages and uploads a GitHub project to the AUR
-  ([docs](doc/gitaur-deploy.md), [code](bin/gitaur-deploy)) 
+* `gitaur-publish` packages and uploads a GitHub project to the AUR
+  ([docs](doc/gitaur-publish.md), [code](bin/gitaur-publish)) 
 
 ## Installing
 `gitaur` is available as an
