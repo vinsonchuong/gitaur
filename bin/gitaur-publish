@@ -1,5 +1,5 @@
 #!/bin/bash
-ARGS=$(getopt -o  hu:p: -l help,user:,pass: -- "$@")
+ARGS=$(getopt -o  h -l help -- "$@")
 eval set -- $ARGS
 while [ $# -gt 0 ]
 do
@@ -7,14 +7,6 @@ do
 		-h|--help)
 			SHOW_HELP=yes
 			shift
-			;;
-		-u|--user)
-			USERNAME="$2"
-			shift 2
-			;;
-		-p|--pass)
-			PASSWORD="$2"
-			shift 2
 			;;
 		--)
 			shift
@@ -41,24 +33,26 @@ else
 		exit 1
 	fi
 
+	PKG="$(dirname "$PKGBUILD")"
 	TMP="$(mktemp -d)"
 
 	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
-
-	cd "$TMP"
-	ERRORS=$(namcap 'PKGBUILD')
-	if [ -n "$ERRORS" ]
+	ERRORS=$(namcap "$TMP/PKGBUILD")
+	if [[ -n $ERRORS ]]
 	then
-		echo $ERRORS
+		echo "$ERRORS"
 		exit 1
-	else
-		mkaurball
-		if [ -n "$USERNAME" ]
-		then
-			burp -u "$USERNAME" -p "$PASSWORD" *.src.tar.gz
-		else
-			burp *.src.tar.gz
-		fi
-		rm -rf "$TMP"
 	fi
+
+	eval "$(cat "$TMP/PKGBUILD")"
+
+	git clone "ssh://aur@aur4.archlinux.org/$pkgname" "$TMP/$pkgname"
+	cp "$TMP/PKGBUILD" "$TMP/$pkgname/PKGBUILD"
+	mksrcinfo -o "$TMP/$pkgname/.SRCINFO" "$TMP/$pkgname/PKGBUILD"
+
+	git -C "$TMP/$pkgname" add -A
+	git -C "$TMP/$pkgname" commit -m "v$pkgver-$pkgrel"
+	git -C "$TMP/$pkgname" push origin master
+
+	rm -rf "$TMP"
 fi

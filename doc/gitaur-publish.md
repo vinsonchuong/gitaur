@@ -2,35 +2,30 @@
 
 ## SYNOPSIS
 `gitaur-publish` [_PKGBUILD_]<br>
-`gitaur-publish` `-u` _username_ `-p` _password_ [`--`] [_PKGBUILD_]...<br>
 `gitaur-publish` `-h`|`--help`<br>
 
 ## DESCRIPTION
 `gitaur-publish` runs `gitaur-pkgbuild` to populate the `PKGBUILD` if it is
-incomplete, creates a source package, and uploads it to the AUR.
+incomplete, creates a source package, and publishes it to the AUR.
 
 If the path to a `PKGBUILD` is not provided, `gitaur-publish` will look in the
 current working directory for a `PKGBUILD`.
 
 `namcap` is used to check the generated `PKGBUILD` for any problems.
 
-`mkaurball` (from the `pkgbuild-introspection` package) is used to build the
+`mksrcinfo` (from the `pkgbuild-introspection` package) is used to build the
 source package.
 
-`burp` is used to upload the source package to the AUR.
-
-If a username and password are not given, `burp` will prompt for them.
+Note that the generated package will be published via Git to
+`ssh://aur@aur4.archlinux.org/package`. `gitaur-publish` assumes that the SSH
+key is in place to enable this action.
 
 ## OPTIONS
 * -h, --help:
   Show help text and exit.
-* -u, --user _username_:
-  Upload the the AUR has the given user.
-* -p, --pass _password_:
-  Authenticate as the given user with the given password.
 
 ## COPYRIGHT
 `gitaur` is Copyright (c) 2015 Vinson Chuong under The MIT License.
 
 ## SEE ALSO
-burp(1), gitaur-pkgbuild(1), namcap(1)
+gitaur-pkgbuild(1), namcap(1)
