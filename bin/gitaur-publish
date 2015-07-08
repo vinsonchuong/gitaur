@@ -44,7 +44,7 @@ else
 	if [[ -n $VERSION ]]
 	then
 		git tag "$VERSION" || exit 1
-		git push origin master || exit 1
+		git push origin "$VERSION" || exit 1
 	fi
 
 	PKG="$(dirname "$PKGBUILD")"
