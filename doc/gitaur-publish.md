@@ -11,8 +11,9 @@ incomplete, creates a source package, and publishes it to the AUR.
 If the path to a `PKGBUILD` is not provided, `gitaur-publish` will look in the
 current working directory for a `PKGBUILD`.
 
-If a `VERSION` is provided, `gitaur-publish` will create a Git tag and release
-from that tag. Otherwise, it assumes that a tag has already been created.
+If a `VERSION` is provided, `gitaur-publish` will create a Git tag, push it to
+GitHub and release from that tag. Otherwise, it assumes that a tag has already
+been created and pushed.
 
 `namcap` is used to check the generated `PKGBUILD` for any problems.
 
