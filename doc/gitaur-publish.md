@@ -1,7 +1,7 @@
 # gitaur-publish(1) -- populates and publishes a PKGBUILD to the AUR
 
 ## SYNOPSIS
-`gitaur-publish` [_PKGBUILD_]<br>
+`gitaur-publish` [_PKGBUILD_] [_VERSION_]<br>
 `gitaur-publish` `-h`|`--help`<br>
 
 ## DESCRIPTION
@@ -10,6 +10,9 @@ incomplete, creates a source package, and publishes it to the AUR.
 
 If the path to a `PKGBUILD` is not provided, `gitaur-publish` will look in the
 current working directory for a `PKGBUILD`.
+
+If a `VERSION` is provided, `gitaur-publish` will create a Git tag and release
+from that tag. Otherwise, it assumes that a tag has already been created.
 
 `namcap` is used to check the generated `PKGBUILD` for any problems.
 

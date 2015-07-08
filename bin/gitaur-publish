@@ -26,10 +26,23 @@ if [ "$SHOW_HELP" = 'yes' ]
 then
 	cat '/usr/share/gitaur/help/gitaur-deploy'
 else
-	PKGBUILD="$(realpath "$1" 2>/dev/null || realpath 'PKGBUILD')"
-	if [ ! -f "$PKGBUILD" ]
+	if [[ $(basename $1) == 'PKGBUILD' ]]
+	then
+		PKGBUILD=$(realpath "$1")
+		VERSION=$2
+	else
+		PKGBUILD=$(realpath 'PKGBUILD')
+		VERSION=$1
+	fi
+
+	if [[ ! -f $PKGBUILD ]]
 	then
 		echo 'Please specify a valid path to a PKGBUILD file' >&2
+		exit 1
+	fi
+
+	if [[ -n $VERSION ]] && ! git tag "$VERSION"
+	then
 		exit 1
 	fi
 
