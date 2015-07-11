@@ -64,9 +64,20 @@ else
 	cp "$TMP/PKGBUILD" "$TMP/$pkgname/PKGBUILD"
 	mksrcinfo -o "$TMP/$pkgname/.SRCINFO" "$TMP/$pkgname/PKGBUILD"
 
-	git -C "$TMP/$pkgname" add -A
-	git -C "$TMP/$pkgname" commit -m "v$pkgver-$pkgrel"
-	git -C "$TMP/$pkgname" push origin master
+	pushd "$TMP/$pkgname" >/dev/null
+
+	git add -A
+	git commit -m "v$pkgver-$pkgrel"
+	git push origin master
+
+	mkaurball
+
+	popd >/dev/null
+
+	git release create \
+		-a "$pkgname-$pkgver-$pkgrel.src.tar.gz" \
+		-m "v$pkgver-$pkgrel" \
+		"v$pkgver-$pkgrel"
 
 	rm -rf "$TMP"
 fi
