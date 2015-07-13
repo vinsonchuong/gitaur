@@ -31,7 +31,7 @@ else
 	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
 	eval "$(cat "$TMP/PKGBUILD" | grep '^\(pkgname\|pkgver\|pkgrel\)=')"
 	sed -i "s/source=.*/source=('$pkgname-$pkgver.tar.gz')/" "$TMP/PKGBUILD"
-	sed -i "s/md5sums=.*/md5sums=('SKIP')/" "$TMP/PKGBUILD"
+	echo "md5sums=('SKIP')" >> "$TMP/PKGBUILD"
 
 	cd "$(dirname "$PKGBUILD")"
 	mkdir "$TMP/$pkgname-$pkgver"
