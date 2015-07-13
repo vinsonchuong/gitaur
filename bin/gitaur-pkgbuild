@@ -15,19 +15,20 @@ do
 	esac
 done
 
-if [ -z "$SHOW_HELP" -a -z "$0"  ]
-then
-	SHOW_HELP='yes'
-	echo 'Please specify the path to a PKGBUILD file' >&2
-	echo >&2
-fi
-
 if [ "$SHOW_HELP" = 'yes' ]
 then
 	cat '/usr/share/gitaur/help/gitaur-pkgbuild'
 else
-	PKGBUILD="$(realpath "$1" 2>/dev/null || realpath 'PKGBUILD')"
-	if [ ! -f "$PKGBUILD" ]
+	if [[ $(basename "$1") == 'PKGBUILD' ]]
+	then
+		PKGBUILD=$(realpath "$1")
+		VERSION=$2
+	else
+		PKGBUILD=$(realpath 'PKGBUILD')
+		VERSION=$1
+	fi
+
+	if [[ ! -f $PKGBUILD ]]
 	then
 		echo 'Please specify a valid path to a PKGBUILD file' >&2
 		exit 1
@@ -139,8 +140,14 @@ else
 	}
 
 	pkgname="$(github '.name')"
-	pkgver="$(hub tag | sort -V | tail -1 | cut -c2-)"
-	pkgrel="$(next_release)"
+	if [[ -n $VERSION ]]
+	then
+		pkgver="$(echo "$VERSION" | cut -c2- | cut -d- -f1)"
+		pkgrel="$(echo "$VERSION" | cut -d- -f2)"
+	else
+		pkgver="$(hub tag | sort -V | tail -1 | cut -c2- | cut -d- -f1)"
+		pkgrel="$(next_release)"
+	fi
 	pkgdesc="$(github '.description')"
 	arch=('any')
 	url="$GITHUB_URL"

@@ -15,13 +15,6 @@ do
 	esac
 done
 
-if [ -z "$SHOW_HELP" -a -z "$0"  ]
-then
-	SHOW_HELP='yes'
-	echo 'Please specify the path to a PKGBUILD file' >&2
-	echo >&2
-fi
-
 if [ "$SHOW_HELP" = 'yes' ]
 then
 	cat '/usr/share/gitaur/help/gitaur-install'
