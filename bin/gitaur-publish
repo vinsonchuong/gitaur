@@ -34,6 +34,12 @@ else
 		exit 1
 	fi
 
+	if [[ -n $VERSION ]]
+	then
+		git tag "$VERSION" || exit 1
+		git push origin "$VERSION" || exit 1
+	fi
+
 	PKG="$(dirname "$PKGBUILD")"
 	TMP="$(mktemp -d)"
 
@@ -46,12 +52,6 @@ else
 	fi
 
 	eval "$(cat "$TMP/PKGBUILD")"
-
-	if [[ -n $VERSION ]]
-	then
-		git tag "v$pkgver-$pkgrel" || exit 1
-		git push origin "v$pkgver-$pkgrel" || exit 1
-	fi
 
 	git clone "ssh://aur@aur4.archlinux.org/$pkgname" "$TMP/$pkgname"
 	cp "$TMP/PKGBUILD" "$TMP/$pkgname/PKGBUILD"
