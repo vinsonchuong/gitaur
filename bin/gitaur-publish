@@ -68,7 +68,7 @@ else
 	popd >/dev/null
 
 	hub release create \
-		-a "$pkgname-$pkgver-$pkgrel.src.tar.gz" \
+		-a "$TMP/$pkgname/$pkgname-$pkgver-$pkgrel.src.tar.gz" \
 		-m "v$pkgver-$pkgrel" \
 		"v$pkgver-$pkgrel"
 
