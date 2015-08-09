@@ -62,7 +62,7 @@ else
 
 	eval "$(cat "$TMP/PKGBUILD")"
 
-	git clone "ssh://aur@aur4.archlinux.org/$pkgname" "$TMP/$pkgname"
+	git clone "ssh://aur@aur.archlinux.org/$pkgname" "$TMP/$pkgname"
 	cp "$TMP/PKGBUILD" "$TMP/$pkgname/PKGBUILD"
 	mksrcinfo -o "$TMP/$pkgname/.SRCINFO" "$TMP/$pkgname/PKGBUILD"
 
