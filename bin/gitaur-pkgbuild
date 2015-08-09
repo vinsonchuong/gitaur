@@ -166,6 +166,10 @@ else
 		cd "$srcdir/$pkgname-$pkgver"
 		[ -d 'doc' ] && clidoc doc/*.md
 	}
+	check() {
+		cd "$srcdir/$pkgname-$pkgver"
+		[ -d 'spec' ] && bats spec
+	}
 	package() {
 		cd "$srcdir/$pkgname-$pkgver"
 		[ -d 'bin' ] && install -Dm755 -t "$pkgdir/usr/bin" bin/*
