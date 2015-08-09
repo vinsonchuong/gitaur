@@ -170,11 +170,17 @@ else
 	source=("$url/archive/v$pkgver-$pkgrel.tar.gz")
 	build() {
 		cd "$srcdir/$pkgname-$pkgver"
-		[ -d 'doc' ] && clidoc doc/*.md
+		if [ -d 'doc' ]
+		then
+			clidoc doc/*.md
+		fi
 	}
 	check() {
 		cd "$srcdir/$pkgname-$pkgver"
-		[ -d 'spec' ] && bats spec
+		if [ -d 'spec' ]
+		then
+			bats spec
+		fi
 	}
 	package() {
 		cd "$srcdir/$pkgname-$pkgver"
