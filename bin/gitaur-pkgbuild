@@ -109,7 +109,7 @@ else
 			pa source
 		} > "$tmp/PKGBUILD"
 		cd "$tmp"
-		makepkg -g 2>/dev/null
+		makepkg -g 2>/dev/null || echo 'md5sums=("SKIP")'
 		rm -rf "$tmp"
 	}
 
@@ -118,19 +118,25 @@ else
 			| sed 's/\\ / /g' \
 			| sed "/^url=/!s|$url|\$url|" \
 			| sed "/^pkgname=/!s/$pkgname/\$pkgname/" \
-			| sed "/^pkgver=/!s/$pkgver/\$pkgver/"
+			| sed "/^pkgver=/!s/$pkgver/\$pkgver/" \
+			| sed "/^pkgrel=/!s/$pkgrel/\$pkgrel/"
 	}
 
 	ps() {
-		local str="${!1}"
-		if [ -n "$str" ]
+		if [[ -z ${!1:-} ]]
 		then
-			stringify '%s="%q"\n' "$1" "$str"
+			return
 		fi
+		stringify '%s="%q"\n' "$1" "${!1}"
 	}
 
 	pa() {
 		local name="$1"
+		if [[ -z ${!name:-} ]]
+		then
+			return
+		fi
+
 		local pattern=$name\[\@]
 		eval set -- ${!pattern}
 		if [ "${#@}" -eq 1 ]
@@ -161,7 +167,7 @@ else
 	arch=('any')
 	url="$GITHUB_URL"
 	license=("$(parse_license)")
-	source=("$GITHUB_URL/archive/v\$pkgver-\$pkgrel.tar.gz")
+	source=("$url/archive/v$pkgver-$pkgrel.tar.gz")
 	build() {
 		cd "$srcdir/$pkgname-$pkgver"
 		[ -d 'doc' ] && clidoc doc/*.md
