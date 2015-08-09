@@ -1,26 +1,23 @@
-#!/bin/bash
-ARGS=$(getopt -o  h -l help -- "$@")
-eval set -- $ARGS
-while [ $# -gt 0 ]
-do
-	case "$1" in
-		-h|--help)
-			SHOW_HELP=yes
-			shift
-			;;
-		--)
-			shift
-			break
-			;;
-	esac
-done
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+# set -o xtrace
+set -o pipefail
 
-if [ "$SHOW_HELP" = 'yes' ]
+eval "$(parse-options help:h -- "$@")"
+
+if [[ $help ]]
 then
 	cat '/usr/share/gitaur/help/gitaur-install'
 else
-	PKGBUILD="$(realpath "$1" 2>/dev/null || realpath 'PKGBUILD')"
-	if [ ! -f "$PKGBUILD" ]
+	if [[ $# = '0' ]]
+	then
+		PKGBUILD=$(realpath 'PKGBUILD')
+	else
+		PKGBUILD=$(realpath "$1")
+	fi
+
+	if [[ $(basename "$PKGBUILD") != 'PKGBUILD' || ! -f $PKGBUILD ]]
 	then
 		echo 'Please specify a valid path to a PKGBUILD file' >&2
 		exit 1

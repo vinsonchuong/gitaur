@@ -1,36 +1,45 @@
-#!/bin/bash
-ARGS=$(getopt -o  h -l help -- "$@")
-eval set -- $ARGS
-while [ $# -gt 0 ]
-do
-	case "$1" in
-		-h|--help)
-			SHOW_HELP=yes
-			shift
-			;;
-		--)
-			shift
-			break
-			;;
-	esac
-done
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+# set -o xtrace
+set -o pipefail
 
-if [ "$SHOW_HELP" = 'yes' ]
+eval "$(parse-options help:h -- "$@")"
+
+if [[ $help ]]
 then
 	cat '/usr/share/gitaur/help/gitaur-pkgbuild'
 else
-	if [[ $(basename "$1") == 'PKGBUILD' ]]
-	then
-		PKGBUILD=$(realpath "$1")
-		VERSION=$2
-	else
-		PKGBUILD=$(realpath 'PKGBUILD')
-		VERSION=$1
-	fi
+	case $# in
+		'0')
+			PKGBUILD='PKGBUILD'
+			VERSION=''
+			;;
+		'1')
+			if [[ $(basename "$1") = 'PKGBUILD' ]]
+			then
+				PKGBUILD=$(realpath "$1")
+				VERSION=''
+			else
+				PKGBUILD='PKGBUILD'
+				VERSION=$1
+			fi
+			;;
+		'2')
+			PKGBUILD=$(realpath "$1")
+			VERSION=$2
+			;;
+	esac
 
-	if [[ ! -f $PKGBUILD ]]
+	if [[ $(basename "$PKGBUILD") != 'PKGBUILD' || ! -f $PKGBUILD ]]
 	then
 		echo 'Please specify a valid path to a PKGBUILD file' >&2
+		exit 1
+	fi
+
+	if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+-[0-9]+$ ]]
+	then
+		echo 'Please specify a valid version' >&2
 		exit 1
 	fi
 
@@ -140,7 +149,7 @@ else
 	}
 
 	pkgname="$(github '.name')"
-	if [[ -n $VERSION ]]
+	if [[ $VERSION ]]
 	then
 		pkgver="$(echo "$VERSION" | cut -c2- | cut -d- -f1)"
 		pkgrel="$(echo "$VERSION" | cut -d- -f2)"
