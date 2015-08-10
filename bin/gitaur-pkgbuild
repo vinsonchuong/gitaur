@@ -114,12 +114,7 @@ else
 	}
 
 	stringify() {
-		printf "$@" \
-			| sed 's/\\ / /g' \
-			| sed "/^url=/!s|$url|\$url|" \
-			| sed "/^pkgname=/!s/$pkgname/\$pkgname/" \
-			| sed "/^pkgver=/!s/$pkgver/\$pkgver/" \
-			| sed "/^pkgrel=/!s/$pkgrel/\$pkgrel/"
+		printf "$@"
 	}
 
 	ps() {
@@ -137,7 +132,7 @@ else
 			return
 		fi
 
-		local pattern=$name\[\@]
+		local pattern="${name}[@]"
 		eval set -- ${!pattern}
 		if [ "${#@}" -eq 1 ]
 		then
