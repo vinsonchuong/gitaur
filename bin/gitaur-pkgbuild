@@ -164,21 +164,21 @@ else
 	license=("$(parse_license)")
 	source=("$url/archive/v$pkgver-$pkgrel.tar.gz")
 	build() {
-		cd "$srcdir/$pkgname-$pkgver"
+		cd "$srcdir/$pkgname-$pkgver-$pkgrel"
 		if [ -d 'doc' ]
 		then
 			clidoc doc/*.md
 		fi
 	}
 	check() {
-		cd "$srcdir/$pkgname-$pkgver"
+		cd "$srcdir/$pkgname-$pkgver-$pkgrel"
 		if [ -d 'spec' ]
 		then
 			bats spec
 		fi
 	}
 	package() {
-		cd "$srcdir/$pkgname-$pkgver"
+		cd "$srcdir/$pkgname-$pkgver-$pkgrel"
 		[ -d 'bin' ] && install -Dm755 -t "$pkgdir/usr/bin" bin/*
 		[ -d 'help' ] && install -Dm644 -t "$pkgdir/usr/share/$pkgname/help" help/*
 		[ -f 'README.md' ] && install -Dm644 -t "$pkgdir/usr/share/doc/$pkgname" 'README.md'
