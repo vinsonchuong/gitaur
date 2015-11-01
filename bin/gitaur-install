@@ -25,26 +25,26 @@ else
 
 	TMP="$(mktemp -d)"
 
-	gitaur-pkgbuild "$PKGBUILD" > "$TMP/PKGBUILD"
-	eval "$(cat "$TMP/PKGBUILD" | grep '^\(pkgname\|pkgver\|pkgrel\)=')"
-	sed -i "s/source=.*/source=('$pkgname-$pkgver.tar.gz')/" "$TMP/PKGBUILD"
-	echo "md5sums=('SKIP')" >> "$TMP/PKGBUILD"
+	gitaur-pkgbuild "$PKGBUILD" > "${TMP}/PKGBUILD"
+	eval "$(cat "${TMP}/PKGBUILD" | grep '^\(pkgname\|pkgver\|pkgrel\)=')"
+	sed -i "s/source=.*/source=('${pkgname}-${pkgver}-${pkgrel}.tar.gz')/" "${TMP}/PKGBUILD"
+	echo "md5sums=('SKIP')" >> "${TMP}/PKGBUILD"
 
 	cd "$(dirname "$PKGBUILD")"
-	mkdir "$TMP/$pkgname-$pkgver"
+	mkdir "${TMP}/${pkgname}-${pkgver}-${pkgrel}"
 	for file in $(git ls-files)
 	do
-		mkdir -p "$TMP/$pkgname-$pkgver/$(dirname "$file")"
-		cp "$file" "$TMP/$pkgname-$pkgver/$file"
+		mkdir -p "${TMP}/${pkgname}-${pkgver}-${pkgrel}/$(dirname "$file")"
+		cp "$file" "${TMP}/${pkgname}-${pkgver}-${pkgrel}/${file}"
 	done
 
 	cd "$TMP"
-	tar -czf "$pkgname-$pkgver.tar.gz" "$pkgname-$pkgver"
+	tar -czf "${pkgname}-${pkgver}-${pkgrel}.tar.gz" "${pkgname}-${pkgver}-${pkgrel}"
 
 	ERRORS=$(namcap 'PKGBUILD')
 	if [ -n "$ERRORS" ]
 	then
-		echo $ERRORS
+		echo "$ERRORS" >&2
 		exit 1
 	else
 		makepkg -s

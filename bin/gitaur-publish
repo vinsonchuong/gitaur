@@ -52,24 +52,24 @@ else
 	PKG="$(dirname "$PKGBUILD")"
 	TMP="$(mktemp -d)"
 
-	gitaur-pkgbuild "$PKGBUILD" "$VERSION" > "$TMP/PKGBUILD"
-	ERRORS=$(namcap "$TMP/PKGBUILD")
+	gitaur-pkgbuild "$PKGBUILD" "$VERSION" > "${TMP}/PKGBUILD"
+	ERRORS=$(namcap "${TMP}/PKGBUILD")
 	if [[ -n $ERRORS ]]
 	then
 		echo "$ERRORS"
 		exit 1
 	fi
 
-	eval "$(cat "$TMP/PKGBUILD")"
+	eval "$(cat "${TMP}/PKGBUILD")"
 
-	git clone "ssh://aur@aur.archlinux.org/$pkgname" "$TMP/$pkgname"
-	cp "$TMP/PKGBUILD" "$TMP/$pkgname/PKGBUILD"
-	mksrcinfo -o "$TMP/$pkgname/.SRCINFO" "$TMP/$pkgname/PKGBUILD"
+	git clone "ssh://aur@aur.archlinux.org/${pkgname}" "${TMP}/${pkgname}"
+	cp "${TMP}/PKGBUILD" "${TMP}/${pkgname}/PKGBUILD"
+	mksrcinfo -o "${TMP}/${pkgname}/.SRCINFO" "${TMP}/${pkgname}/PKGBUILD"
 
-	pushd "$TMP/$pkgname" >/dev/null
+	pushd "${TMP}/${pkgname}" >/dev/null
 
 	git add -A
-	git commit -m "v$pkgver-$pkgrel"
+	git commit -m "v${pkgver}-${pkgrel}"
 	git push origin master
 
 	mkaurball
@@ -77,9 +77,9 @@ else
 	popd >/dev/null
 
 	hub release create \
-		-a "$TMP/$pkgname/$pkgname-$pkgver-$pkgrel.src.tar.gz" \
-		-m "v$pkgver-$pkgrel" \
-		"v$pkgver-$pkgrel"
+		-a "${TMP}/${pkgname}/${pkgname}-${pkgver}-${pkgrel}.src.tar.gz" \
+		-m "v${pkgver}-${pkgrel}" \
+		"v${pkgver}-${pkgrel}"
 
 	rm -rf "$TMP"
 fi
