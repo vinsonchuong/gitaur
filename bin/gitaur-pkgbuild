@@ -59,7 +59,7 @@ else
 
 	maintainers() {
 		local people=$(sed -n '/# Maintainer\|# Contributor/p' "$PKGBUILD")
-		if [ -n "$people" ]
+		if [[ -n $people ]]
 		then
 			echo "$people"
 		else
@@ -70,7 +70,7 @@ else
 	next_release() {
 		local aur_version="$(aur 'Version' | grep -o '^[^-]*')"
 		local aur_release="$(aur 'Version' | grep -o '[^-]*$')"
-		if [ "$aur_version" = "$pkgver" ]
+		if [[ $aur_version = $pkgver ]]
 		then
 			echo "$((aur_release + 1))"
 		else
@@ -84,7 +84,7 @@ else
 		cp "$FILE" "${TMP}/target"
 		LICENSE=$(ninka "$TMP/target" | awk -F ';' '{print $2}')
 		rm -rf "$TMP"
-		if [ -n "$LICENSE" ]
+		if [[ -n $LICENSE ]]
 		then
 			echo "$LICENSE" \
 				| sed 's/GPLv/GPL/' \
@@ -134,10 +134,10 @@ else
 
 		local pattern="${name}[@]"
 		eval set -- ${!pattern}
-		if [ "${#@}" -eq 1 ]
+		if [[ ${#@} -eq 1 ]]
 		then
 			stringify '%s=("%q")\n' "$name" "$1"
-		elif [ "${#@}" -gt 1 ]
+		elif [[ ${#@} -gt 1 ]]
 		then
 			stringify '%s=(\n' "$name"
 			stringify '\t"%q"\n' "$@"
@@ -162,17 +162,25 @@ else
 	arch=('any')
 	url="$GITHUB_URL"
 	license=("$(parse_license)")
+	if [[ -d 'doc' ]]
+	then
+		makedepends=('clidoc')
+	fi
+	if [[ -d 'spec' ]]
+	then
+		checkdepends=('bats-git')
+	fi
 	source=("${url}/archive/v${pkgver}-${pkgrel}.tar.gz")
 	build() {
 		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
-		if [ -d 'doc' ]
+		if [[ -d 'doc' ]]
 		then
 			clidoc doc/*.md
 		fi
 	}
 	check() {
 		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
-		if [ -d 'spec' ]
+		if [[ -d 'spec' ]]
 		then
 			bats spec
 		fi

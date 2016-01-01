@@ -25,11 +25,16 @@ The default values used are as follows:
 * `url` is the GitHub repository's URL
 * `license` is computed by parsing the `LICENSE` file in the root of the
   repository
+* `makedepends` containing `clidoc` (see also the default `build` function)
+* `checkdepends` containing `bats-git` (see also the default `check` function)
 * `source` is an archived version of the most recent tag as described above
 * `md5sums` is computed using `makepkg -g`
 
 A default `build` function is provided that runs `clidoc` on the
 contents of the `doc` directory if it exists.
+
+A default `check` function is provided that runs `bats` on the
+contents of the `spec` directory if it exists.
 
 Also, a default `package` function is provided that automatically installs
 files that follow the directory structure:
