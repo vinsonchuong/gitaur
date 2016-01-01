@@ -122,7 +122,7 @@ else
 		then
 			return
 		fi
-		stringify '%s="%q"\n' "$1" "${!1}"
+		stringify '%s=%q\n' "$1" "${!1}"
 	}
 
 	pa() {
@@ -136,11 +136,11 @@ else
 		eval set -- ${!pattern}
 		if [[ ${#@} -eq 1 ]]
 		then
-			stringify '%s=("%q")\n' "$name" "$1"
+			stringify '%s=(%q)\n' "$name" "$1"
 		elif [[ ${#@} -gt 1 ]]
 		then
 			stringify '%s=(\n' "$name"
-			stringify '\t"%q"\n' "$@"
+			stringify '\t%q\n' "$@"
 			stringify ')\n'
 		fi
 	}
