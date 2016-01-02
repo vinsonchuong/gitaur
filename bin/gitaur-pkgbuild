@@ -175,7 +175,7 @@ else
 		checkdepends=('bats-git')
 		check() {
 			cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
-			PATH="$(realpath 'bin'):${PATH}"bats spec
+			PATH="${PWD}/bin:${PATH}" bats spec
 		}
 	fi
 	source=("${url}/archive/v${pkgver}-${pkgrel}.tar.gz")
