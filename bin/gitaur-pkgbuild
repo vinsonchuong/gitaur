@@ -165,26 +165,20 @@ else
 	if [[ -d 'doc' ]]
 	then
 		makedepends=('clidoc')
+		build() {
+			cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
+			clidoc doc/*.md
+		}
 	fi
 	if [[ -d 'spec' ]]
 	then
 		checkdepends=('bats-git')
+		check() {
+			cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
+			PATH="$(realpath 'bin'):${PATH}"bats spec
+		}
 	fi
 	source=("${url}/archive/v${pkgver}-${pkgrel}.tar.gz")
-	build() {
-		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
-		if [[ -d 'doc' ]]
-		then
-			clidoc doc/*.md
-		fi
-	}
-	check() {
-		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
-		if [[ -d 'spec' ]]
-		then
-			bats spec
-		fi
-	}
 	package() {
 		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
 		[ -d 'bin' ] && install -Dm755 -t "${pkgdir}/usr/bin" bin/*
