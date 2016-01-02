@@ -31,7 +31,7 @@ key is in place to enable this action.
   Show help text and exit.
 
 ## COPYRIGHT
-`gitaur` is Copyright (c) 2015 Vinson Chuong under The MIT License.
+`gitaur` is Copyright (c) 2016 Vinson Chuong under The MIT License.
 
 ## SEE ALSO
 gitaur-pkgbuild(1), namcap(1)
