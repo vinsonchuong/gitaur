@@ -40,6 +40,7 @@ Also, a default `package` function is provided that automatically installs
 files that follow the directory structure:
 
 * `bin` containing only executables with no sub-directories
+* `lib` containing files referenced by the above executables
 * `help` text generated above by `clidoc`
 * `man` containing `*.1` man pages
 * `README.md`
