@@ -178,6 +178,14 @@ else
 			PATH="${PWD}/bin:${PATH}" bats spec
 		}
 	fi
+	if [[ -d 'test' ]]
+	then
+		checkdepends=('bats-git')
+		check() {
+			cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
+			PATH="${PWD}/bin:${PATH}" bats test
+		}
+	fi
 	source=("${url}/archive/v${pkgver}-${pkgrel}.tar.gz")
 	package() {
 		cd "${srcdir}/${pkgname}-${pkgver}-${pkgrel}"
